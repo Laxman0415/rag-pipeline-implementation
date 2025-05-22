@@ -62,7 +62,8 @@ setup(
     author_email='singhlaxmandd@gmail.com',
     url='https://github.com/Laxman0415/rag-pipeline-implementation',
     license='MIT',
-    packages=find_packages(exclude=["tests*"]),                             # Automatically find all packages
+    packages=find_packages(where="src",exclude=["tests*"]),                # Automatically find all packages
+    package_dir={"": "src"},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 3',
