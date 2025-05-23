@@ -2,13 +2,22 @@ from langchain_groq import ChatGroq
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+from dotenv import load_dotenv, find_dotenv
 import sys
-import pickle
 import os
-import zipfile
+import json
 
 from utility.custom_logger import logger
 from utility.custom_exception import CustomException
+
+# laoding env file for API KEY
+env_path = find_dotenv(
+    filename=".env",
+    raise_error_if_not_found=True
+)
+
+if env_path:
+    load_dotenv(env_path)
 
 def get_groq_chat_model(model_name ="llama3-8b-8192" ):
     """
