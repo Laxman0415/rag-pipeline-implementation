@@ -1,0 +1,10 @@
+dotenv
+langchain_community
+langchain
+langchain_core
+faiss-cpu
+unstructured
+langchain_groq
+langchain_google_genai
+
+-e .
