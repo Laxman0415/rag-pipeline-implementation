@@ -10,11 +10,21 @@ from utility.custom_exception import CustomException
 from utility.utils import load_metadata, get_google_embedding_model , save_metadata 
 
 
+current_path = os.path.dirname(os.path.abspath(__name__))
+metadata_path = os.path.join(current_path,"src","config","faiss_index_metadata.json")
+metadata_file_path = os.path.abspath(metadata_path)
+
+index_path = os.path.join(current_path,"src","faiss_index")
+index_dir_path = os.path.abspath(index_path)
+
+logger.info(f"Index Dir Path : {index_dir_path}")
+logger.info(f"Metadata File Path : {metadata_file_path}")
 
 class DocumentIngestion:
 
-    METADATA_FILE = "config/faiss_index_metadata.json"
-    INDEX_DIR = "faiss_index"  # Directory to store multiple FAISS indexes
+    METADATA_FILE = metadata_file_path
+
+    INDEX_DIR = index_dir_path  # Directory to store multiple FAISS indexes
 
     def __init__(self,web_doc_url):
         logger.info(f"Document URL is : {web_doc_url=}")
@@ -24,12 +34,11 @@ class DocumentIngestion:
         """        
         """
         try:
-            
-            logger.info("IN Load")
+            logger.info("Loading Uploaded Document")
             loader = UnstructuredURLLoader(urls=[self.web_doc_url])
             # Load the document
             documents = loader.load()
-            logger.info("After loader.load()")
+            logger.info(f"Uploaded Document : {self.web_doc_url} is Successfully Loaded")
             return documents
         
         except Exception as e:
@@ -45,7 +54,9 @@ class DocumentIngestion:
 
             text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000,chunk_overlap =200)
             raw_document = self.get_raw_document()
+            logger.info("Chunking Started")
             chunked_data = text_splitter.split_documents(raw_document)
+            logger.info("Chunking Completed")
             return chunked_data
         
         except Exception as e:
@@ -63,10 +74,7 @@ class DocumentIngestion:
         """
         try:
             vector_store = FAISS.from_documents(documents=chunked_data,embedding=embedding)
-            # Save index for later use
-            vector_store.save_local(index_path)            
-            # retriever = vector_store.as_retriever()
-            # return vector_store,retriever
+            vector_store.save_local(index_path) 
         except Exception as e:
             raise CustomException(e,sys)
     
@@ -79,7 +87,7 @@ class DocumentIngestion:
             index_filename_data = pre_stored_metadata_config.get(self.web_doc_url,{}) 
             index_filename = index_filename_data.get("vector_store_index",f"{len(pre_stored_metadata_config)}.faiss")  # Assigning a new index if not found
             index_path = os.path.join(DocumentIngestion.INDEX_DIR, index_filename)
-            logger.info(f"{index_path=}")
+            logger.info(f"index path is: {index_path=}")
 
             if not os.path.exists(DocumentIngestion.INDEX_DIR):
                 os.makedirs(DocumentIngestion.INDEX_DIR)  # Creating a directory as it doesn't exist
@@ -87,11 +95,11 @@ class DocumentIngestion:
             if os.path.exists(index_path):
                 logger.info(f"Loading existing FAISS index for {self.web_doc_url}...")
                 pre_stored_knowledge_base_flag = True
-                logger.info("Knowledge Base is Already Ingested in DB")
+                logger.info("Knowledge Base was Already Ingested in DB")
                 # vector_store = FAISS.load_local(index_path, embedding,allow_dangerous_deserialization=True)
                 # retriever = vector_store.as_retriever()
             else:
-                logger.info(f"Generating new FAISS index for newly queried Book : {self.web_doc_url}...")
+                logger.info(f"Generating new FAISS index for newly injested Book : {self.web_doc_url}...")
                 logger.info("Starting the Process from Scratch")
                 queried_web_doc_metadata = {}
                 queried_web_doc_metadata["vector_store_index"] = index_filename
@@ -99,7 +107,6 @@ class DocumentIngestion:
                 google_embedding = get_google_embedding_model()
                 DocumentIngestion.vector_store_save_document(chunked_data, google_embedding,index_path)
                 
-                # Updating the metadata with the new mapping and Queried New Web Doc Metadata
                 pre_stored_metadata_config[self.web_doc_url] = queried_web_doc_metadata
                 logger.info(f"{pre_stored_metadata_config=}")
                 save_metadata(pre_stored_metadata_config,DocumentIngestion.METADATA_FILE)
