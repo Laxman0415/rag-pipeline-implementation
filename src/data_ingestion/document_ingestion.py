@@ -17,14 +17,7 @@ metadata_file_path = os.path.abspath(metadata_path)
 index_path = os.path.join(current_path,"src","faiss_index")
 index_dir_path = os.path.abspath(index_path)
 
-logger.info(f"Index Dir Path : {index_dir_path}")
-logger.info(f"Metadata File Path : {metadata_file_path}")
-
 class DocumentIngestion:
-
-    METADATA_FILE = metadata_file_path
-
-    INDEX_DIR = index_dir_path  # Directory to store multiple FAISS indexes
 
     def __init__(self,web_doc_url):
         logger.info(f"Document URL is : {web_doc_url=}")
@@ -81,26 +74,24 @@ class DocumentIngestion:
 
     def run_data_ingestion(self):
         try:
-            pre_stored_metadata_config =  load_metadata(DocumentIngestion.METADATA_FILE)
+            pre_stored_metadata_config =  load_metadata(metadata_file_path)
             pre_stored_knowledge_base_flag = False
             # Generating the unique index filename for this Knowledge Base
             index_filename_data = pre_stored_metadata_config.get(self.web_doc_url,{}) 
             index_filename = index_filename_data.get("vector_store_index",f"{len(pre_stored_metadata_config)}.faiss")  # Assigning a new index if not found
-            index_path = os.path.join(DocumentIngestion.INDEX_DIR, index_filename)
+            index_path = os.path.join(index_dir_path, index_filename)
             logger.info(f"index path is: {index_path=}")
 
-            if not os.path.exists(DocumentIngestion.INDEX_DIR):
-                os.makedirs(DocumentIngestion.INDEX_DIR)  # Creating a directory as it doesn't exist
+            if not os.path.exists(index_dir_path):
+                os.makedirs(index_dir_path)  # Creating a directory as it doesn't exist
 
             if os.path.exists(index_path):
                 logger.info(f"Loading existing FAISS index for {self.web_doc_url}...")
                 pre_stored_knowledge_base_flag = True
                 logger.info("Knowledge Base was Already Ingested in DB")
-                # vector_store = FAISS.load_local(index_path, embedding,allow_dangerous_deserialization=True)
-                # retriever = vector_store.as_retriever()
             else:
                 logger.info(f"Generating new FAISS index for newly injested Book : {self.web_doc_url}...")
-                logger.info("Starting the Process from Scratch")
+                logger.info("Starting the Data Ingestion Process from Scratch")
                 queried_web_doc_metadata = {}
                 queried_web_doc_metadata["vector_store_index"] = index_filename
                 chunked_data = self.document_chunking()
@@ -109,7 +100,7 @@ class DocumentIngestion:
                 
                 pre_stored_metadata_config[self.web_doc_url] = queried_web_doc_metadata
                 logger.info(f"{pre_stored_metadata_config=}")
-                save_metadata(pre_stored_metadata_config,DocumentIngestion.METADATA_FILE)
+                save_metadata(pre_stored_metadata_config,metadata_file_path)
             
             return pre_stored_knowledge_base_flag
         except Exception as e:
