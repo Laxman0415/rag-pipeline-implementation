@@ -1,0 +1,48 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Unit test / coverage reports
+coverage/
+*.cover
+*.pytest_cache/
+nosetests.xml
+coverage.xml
+*.log
+
+# Environment files
+
+# Jupyter Notebooks
+*.ipynb
+
+# OS or editor folders/files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Git
+.git/
+.gitignore
+
+# Docker-related
+Dockerfile
+docker-compose.yml
+
+# Compiled libraries or binary outputs
+*.so
+*.a
+*.o
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Frontend node modules if any (for JS-based frontends)
+node_modules/
+
+# Cache
+*.cache
