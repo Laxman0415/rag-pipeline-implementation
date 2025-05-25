@@ -8,7 +8,7 @@ from utility.utils import get_groq_chat_model
 import os,sys
 
 current_path = os.path.dirname(os.path.abspath(__name__))
-prompt_template_path = os.path.join(current_path,"src","prompt_registry","knowledge_base.txt")
+prompt_template_path = os.path.join(current_path,"prompt_registry","knowledge_base.txt")
 prompt_path = os.path.abspath(prompt_template_path)
 
 
