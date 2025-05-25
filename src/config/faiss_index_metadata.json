@@ -1,0 +1,14 @@
+{
+    "https://www.gutenberg.org/cache/epub/13421/pg13421.txt": {
+        "vector_store_index": "0.faiss"
+    },
+    "https://www.gutenberg.org/cache/epub/1342/pg1342.txt": {
+        "vector_store_index": "1.faiss"
+    },
+    "https://www.gutenberg.org/cache/epub/12/pg12.txt": {
+        "vector_store_index": "2.faiss"
+    },
+    "https://www.gutenberg.org/cache/epub/13/pg13.txt": {
+        "vector_store_index": "3.faiss"
+    }
+}
