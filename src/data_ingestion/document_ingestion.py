@@ -11,10 +11,10 @@ from utility.utils import load_metadata, get_google_embedding_model , save_metad
 
 
 current_path = os.path.dirname(os.path.abspath(__name__))
-metadata_path = os.path.join(current_path,"src","config","faiss_index_metadata.json")
+metadata_path = os.path.join(current_path,"config","faiss_index_metadata.json")
 metadata_file_path = os.path.abspath(metadata_path)
 
-index_path = os.path.join(current_path,"src","faiss_index")
+index_path = os.path.join(current_path,"faiss_index")
 index_dir_path = os.path.abspath(index_path)
 
 class DocumentIngestion:
