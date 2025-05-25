@@ -16,7 +16,7 @@ if env_path:
     load_dotenv(env_path)
 
 current_path = os.path.dirname(os.path.abspath(__name__))
-metadata_path = os.path.join(current_path,"src","config","faiss_index_metadata.json")
+metadata_path = os.path.join(current_path,"config","faiss_index_metadata.json")
 metadata_file_path = os.path.abspath(metadata_path)
  
 
