@@ -12,7 +12,7 @@ from utility.custom_exception import CustomException
 
 # laoding env file for API KEY
 env_path = find_dotenv(
-    filename=".env",
+    filename="env",
     raise_error_if_not_found=True
 )
 

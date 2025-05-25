@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-# COPY .env .
+COPY env .
 
 RUN ls -R /app
 
