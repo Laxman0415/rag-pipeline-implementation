@@ -37,7 +37,7 @@ class QueryRequest(BaseModel):
 
 @router.get("/")
 async def index():
-    return "<h1>Hello</h1>"
+    return "Hello"
 
 @router.post("/ingest")
 async def ingest_document(payload: IngestRequest):
@@ -49,7 +49,7 @@ async def ingest_document(payload: IngestRequest):
         document_ingestion = DocumentIngestion(payload.document_web_url)
         pre_stored_knowledge_base_flag = document_ingestion.run_data_ingestion()
         if pre_stored_knowledge_base_flag:
-            return {"message": "Document Was ALready Ingested in DB", "doc_name": payload.document_web_url, "status_code":200, "status":"Success"}
+            return {"message": "Document Was Already Ingested in DB", "doc_name": payload.document_web_url, "status_code":200, "status":"Success"}
         else:
             logger.info("Data Ingestion Completed Successfully.")
             return {"message": "Document ingested", "doc_name": payload.document_web_url, "status_code":200, "status":"Success"}
